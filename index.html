@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgendaMed Renacer - Portal de Gestión de Citas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-light: #ccfbf1;
+            --bg-neutral: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-neutral);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 40px;
+        }
+
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .logo-text p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .role-selector-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .role-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .role-selector {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-neutral);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--primary-dark);
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .role-selector:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 24px auto 0 auto;
+            padding: 0 16px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 10px 16px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .nav-tab.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 600;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 24px auto 0 auto;
+            padding: 0 16px;
+        }
+
+        .section-view {
+            display: none;
+        }
+
+        .section-view.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .form-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .form-check input {
+            margin-top: 4px;
+            cursor: pointer;
+        }
+
+        .form-check label {
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            transition: all 0.2s;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-neutral);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background-color: #f1f5f9;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+
+        .btn-disabled {
+            background-color: #cbd5e1;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Alert Box */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            border: 1px solid #b2f5ea;
+        }
+
+        .alert-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .alert-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* Tables */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f1f5f9;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Schedulers & Slot Selectors */
+        .slot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .slot-btn {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--card-bg);
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slot-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .slot-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .slot-btn.disabled {
+            background-color: #f1f5f9;
+            color: #cbd5e1;
+            cursor: not-allowed;
+            border-color: var(--border-color);
+        }
+
+        /* Session Timer Badge */
+        .session-timer-badge {
+            background-color: #f1f5f9;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--success);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Receipts styling */
+        .receipt-container {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            background-color: #fafbfc;
+            margin-top: 16px;
+        }
+
+        .receipt-header {
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 12px;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .receipt-total {
+            font-weight: 700;
+            font-size: 15px;
+            border-top: 1px dashed var(--border-color);
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        .receipt-qr {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 16px;
+            gap: 8px;
+        }
+
+        .qr-placeholder {
+            width: 110px;
+            height: 110px;
+            background-color: #f1f5f9;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+
+        /* SVG Bar Chart Styling */
+        .chart-svg {
+            width: 100%;
+            height: 200px;
+        }
+
+        .bar {
+            fill: var(--primary);
+            transition: fill 0.2s;
+            cursor: pointer;
+        }
+
+        .bar:hover {
+            fill: var(--primary-dark);
+        }
+
+        .bar-label {
+            font-size: 10px;
+            fill: var(--text-muted);
+            text-anchor: middle;
+        }
+
+        .bar-value {
+            font-size: 10px;
+            fill: var(--text-main);
+            text-anchor: middle;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <div class="logo-container">
+            <div class="logo-icon">AM</div>
+            <div class="logo-text">
+                <h1>AgendaMed Renacer</h1>
+                <p>Portal Web Integrado (Propuesta 1)</p>
+            </div>
+        </div>
+
+        <div class="role-selector-container">
+            <div id="sessionTimerBadge" class="session-timer-badge" style="display: none;">
+                <span class="pulse-dot"></span>
+                <span id="sessionTimerText">Sesión: 15:00</span>
+            </div>
+            <span class="role-label">MODO ROL:</span>
+            <select id="roleSelector" class="role-selector" onchange="switchRole()">
+                <option value="paciente">Paciente</option>
+                <option value="recepcionista">Recepcionista</option>
+                <option value="medico">Médico</option>
+                <option value="admin">Administrador</option>
+            </select>
+        </div>
+    </header>
+
+    <!-- Nav tabs -->
+    <nav class="nav-container" id="navTabsContainer">
+        <!-- Tabs are injected dynamically depending on selected role -->
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+
+        <!-- ========================================= -->
+        <!-- VIEW: LOGIN (Autenticación) -->
+        <!-- ========================================= -->
+        <section id="view-login" class="section-view active">
+            <div class="grid-2" style="max-width: 900px; margin: 0 auto;">
+                <div class="card" style="display: flex; flex-direction: column; justify-content: center;">
+                    <h2 style="font-size: 24px; font-weight: 700; color: var(--primary-dark); margin-bottom: 12px;">Bienvenido a Renacer</h2>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
+                        Portal integral para agendamiento de citas, pagos de copagos y consultas de agendas médicas en el sector Sur de Quito y Sangolquí.
+                    </p>
+                    <div class="alert alert-info">
+                        <strong>Demo Roles:</strong> Utiliza el selector superior para cambiar de rol o simula el inicio de sesión aquí.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Iniciar Sesión</span>
+                    </div>
+
+                    <!-- Lockout alert -->
+                    <div id="lockoutAlert" class="alert alert-danger" style="display: none;">
+                        <strong>Cuenta Bloqueada (RF-009):</strong> Has superado el límite de 3 intentos fallidos. Por seguridad, la cuenta está inhabilitada por 15 minutos. 
+                        <span id="lockoutTimer" style="font-weight: 700;">15:00</span>
+                    </div>
+
+                    <div id="loginFormContainer">
+                        <div class="form-group">
+                            <label class="form-label" for="loginEmail">Correo Electrónico</label>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="paciente@ejemplo.com" value="paciente@ejemplo.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="loginPass">Contraseña</label>
+                            <input type="password" id="loginPass" class="form-control" placeholder="••••••••" value="password123">
+                        </div>
+
+                        <button id="loginBtn" class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="handleLogin()">
+                            Ingresar
+                        </button>
+
+                        <p style="text-align: center; margin-top: 16px; font-size: 12px;">
+                            <a href="#" style="color: var(--primary); text-decoration: none;" onclick="triggerRecovery()">¿Olvidó su contraseña? (RF-002)</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================= -->
+        <!-- VIEW: REGISTRO PACIENTE (Gestión de Pacientes) -->
+        <!-- ========================================= -->
+        <section id="view-registro" class="section-view">
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <div class="card-header">
+                    <span class="card-title">Registro de Paciente Nuevo (RF-010)</span>
+                </div>
+
+                <div id="registrationSuccessAlert" class="alert alert-success" style="display: none;">
+                    <strong>Registro Exitoso:</strong> El paciente ha sido creado correctamente cumpliendo con la validación de cédula y LGPD.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="regCedula">Cédula Ecuatoriana (10 dígitos)</label>
+                    <input type="text" id="regCedula" class="form-control" placeholder="1723456789" maxlength="10">
+                    <span id="cedulaFeedback" style="font-size: 11px; display: block; margin-top: 4px;"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="regNombre">Nombres y Apellidos Completos</label>
+                    <input type="text" id="regNombre" class="form-control" placeholder="María Alejandra Pérez">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="regEmail">Correo Electrónico</label>
+                    <input type="email" id="regEmail" class="form-control" placeholder="maria.perez@ejemplo.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="regCelular">Número de Celular</label>
+                    <input type="text" id="regCelular" class="form-control" placeholder="0998765432" maxlength="10">
+                </div>
+
+                <!-- LGPD Consent check (RF-013) -->
+                <div class="form-check">
+                    <input type="checkbox" id="regLgpd">
+                    <label for="regLgpd">
+                        <strong>Consentimiento Explícito de Datos (RF-013):</strong> Acepto el tratamiento de mis datos personales y médicos sensibles para el agendamiento y facturación de citas médicas de acuerdo con la LOPDP / LGPD.
+                    </label>
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="handleRegistration()">
+                    Registrar Paciente
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================= -->
+        <!-- VIEW: BUSQUEDA PACIENTE (Solo Recepcionista/Médico) -->
+        <!-- ========================================= -->
+        <section id="view-busqueda" class="section-view">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Búsqueda de Pacientes Existentes (RF-011)</span>
+                </div>
+
+                <div class="form-group" style="max-width: 500px; display: flex; gap: 8px;">
+                    <input type="text" id="searchQuery" class="form-control" placeholder="Buscar por Cédula o Nombre...">
+                    <button class="btn btn-primary" onclick="searchPatients()">Buscar</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cédula</th>
+                                <th>Paciente</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>Estado LGPD</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientSearchResultsTable">
+                            <!-- JS will inject mock rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================= -->
+        <!-- VIEW: RESERVA DE CITAS -->
+        <!-- ========================================= -->
+        <section id="view-reserva" class="section-view">
+            <div class="grid-2">
+                <!-- Configurator -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title" id="bookingCardTitle">Pre-Reserva de Cita (RF-014)</span>
+                    </div>
+
+                    <div id="walkinToggleContainer" class="form-group" style="display: none; background: var(--primary-light); padding: 12px; border-radius: 8px;">
+                        <div class="form-check" style="margin-top: 0;">
+                            <input type="checkbox" id="walkinCheck" onchange="toggleWalkinMode()">
+                            <label for="walkinCheck">
+                                <strong>Modo Paciente sin Cita (Walk-in - RF-016):</strong> Activar bloqueo y reserva directa de espacio libre para pacientes presentes físicamente.
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bookSucursal">Sucursal (RF-025)</label>
+                        <select id="bookSucursal" class="form-control" onchange="loadDoctorsForBooking()">
+                            <option value="Matriz Sur">Matriz Sur (Guamaní)</option>
+                            <option value="La Arcadia">La Arcadia</option>
+                            <option value="Sangolquí">Sangolquí (Valle de los Chillos)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bookEspecialidad">Especialidad (RF-027)</label>
+                        <select id="bookEspecialidad" class="form-control" onchange="loadDoctorsForBooking()">
+                            <option value="Ginecología">Ginecología</option>
+                            <option value="Obstetricia">Obstetricia</option>
+                            <option value="Medicina General">Medicina General</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bookMedico">Médico Especialista</label>
+                        <select id="bookMedico" class="form-control" onchange="loadSlots()">
+                            <!-- Load dynamic -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="bookFecha">Fecha de Cita</label>
+                        <input type="date" id="bookFecha" class="form-control" onchange="loadSlots()">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Bloques Horarios Disponibles (Cero Colisiones - RNF-004)</label>
+                        <div class="slot-grid" id="slotsContainer">
+                            <!-- Slots dynamic -->
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" onclick="triggerPreReserva()">
+                        Confirmar Pre-Reserva (15 min de validez)
+                    </button>
+                </div>
+
+                <!-- Live State & Payment Info -->
+                <div class="card" id="bookingStatusCard">
+                    <div class="card-header">
+                        <span class="card-title">Resumen de Cita Pre-Reservada</span>
+                    </div>
+                    <div id="bookingSummaryContent">
+                        <p style="color: var(--text-muted); text-align: center; padding: 40px 0;">
+                            No tienes ninguna cita pre-reservada en este momento.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================= -->
+        <!-- VIEW: MIS CITAS / HISTORIAL -->
+        <!-- ========================================= -->
+        <section id="view-citas" class="section-view">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Historial de Citas (RF-012)</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha y Hora</th>
+                                <th>Especialista / Sucursal</th>
+                                <th>Especialidad</th>
+                                <th>Estado de Pago (RF-019)</th>
+                                <th>Costo Base</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsHistoryTable">
+                            <!-- JS will inject appointments -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================= -->
+        <!-- VIEW: AUTOGESTION MEDICO -->
+        <!-- ========================================= -->
+        <section id="view-medico" class="section-view">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Autogestión de Disponibilidad por Médico (RF-025)</span>
+                </div>
+                <div class="alert alert-info">
+                    <strong>Médico:</strong> Dr. Santiago Rueda | Especialidad: Obstetricia | Sucursal: Matriz Sur
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Configurar Mis Días y Horarios</h3>
+                        <div class="form-group">
+                            <label class="form-label" for="medDaySelect">Día de la Semana</label>
+                            <select id="medDaySelect" class="form-control">
+                                <option value="lunes">Lunes</option>
+                                <option value="martes">Martes</option>
+                                <option value="miercoles">Miércoles</option>
+                                <option value="jueves">Jueves</option>
+                                <option value="viernes">Viernes</option>
+                                <option value="sabado">Sábado</option>
+                            </select>
+                        </div>
+                        <div class="grid-2" style="gap: 8px;">
+                            <div class="form-group">
+                                <label class="form-label">Hora Inicio</label>
+                                <input type="time" class="form-control" value="08:00">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Hora Fin</label>
+                                <input type="time" class="form-control" value="14:00">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="alert('Agenda guardada con validación física de consultorios (RF-025).')">
+                            Guardar Agenda
+                        </button>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Mis Especialidades Habilitadas (RF-027)</h3>
+                        <div class="form-check">
+                            <input type="checkbox" id="spec1" checked disabled>
+                            <label for="spec1">Obstetricia (Primaria)</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="spec2" checked>
+                            <label for="spec2">Medicina General</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="spec3">
+                            <label for="spec3">Ginecología</label>
+                        </div>
+                        <button class="btn btn-secondary" style="margin-top: 16px;" onclick="alert('Especialidades guardadas por el Administrador.')">
+                            Actualizar Especialidades
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================= -->
+        <!-- VIEW: CONFIGURACIÓN GLOBAL (Solo Admin) -->
+        <!-- ========================================= -->
+        <section id="view-config" class="section-view">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Configuración de Horario Global de Clínica (RF-026)</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sucursal</label>
+                    <select class="form-control" style="max-width: 300px;">
+                        <option>Matriz Sur</option>
+                        <option>La Arcadia</option>
+                        <option>Sangolquí</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Día</th>
+                                <th>Hora Apertura</th>
+                                <th>Hora Cierre</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lunes a Viernes</td>
+                                <td><input type="time" class="form-control" value="07:00"></td>
+                                <td><input type="time" class="form-control" value="19:00"></td>
+                                <td><span class="badge badge-success">Abierto</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sábado</td>
+                                <td><input type="time" class="form-control" value="08:00"></td>
+                                <td><input type="time" class="form-control" value="13:00"></td>
+                                <td><span class="badge badge-success">Abierto</span></td>
+                            </tr>
+                            <tr>
+                                <td>Domingo</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td><span class="badge badge-danger">Cerrado</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 16px;" onclick="alert('Configuración global actualizada.')">
+                    Guardar Configuración Global
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================= -->
+        <!-- VIEW: REPORTES (Solo Admin/Médico) -->
+        <!-- ========================================= -->
+        <section id="view-reportes" class="section-view">
+            <div class="grid-3">
+                <!-- Reporte 1 -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Citas Confirmadas (RF-028)</span>
+                    </div>
+                    <p style="font-size: 24px; font-weight: 700; color: var(--primary-dark);">148 Citas</p>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Este Mes (Filtrable por sucursal)</p>
+                    <svg class="chart-svg">
+                        <!-- Bar chart -->
+                        <rect class="bar" x="20" y="80" width="30" height="100"></rect>
+                        <text class="bar-value" x="35" y="70">50</text>
+                        <text class="bar-label" x="35" y="195">Sur</text>
+
+                        <rect class="bar" x="70" y="50" width="30" height="130"></rect>
+                        <text class="bar-value" x="85" y="40">65</text>
+                        <text class="bar-label" x="85" y="195">Arcadia</text>
+
+                        <rect class="bar" x="120" y="110" width="30" height="70"></rect>
+                        <text class="bar-value" x="135" y="100">33</text>
+                        <text class="bar-label" x="135" y="195">Sangolquí</text>
+                    </svg>
+                </div>
+
+                <!-- Reporte 2 -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Reporte de Ausentismo (RF-029)</span>
+                    </div>
+                    <p style="font-size: 24px; font-weight: 700; color: var(--warning);">8.4% Tasa</p>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Ausentismo de pacientes este mes</p>
+                    <svg class="chart-svg">
+                        <!-- Bar chart -->
+                        <rect class="bar" x="20" y="100" width="35" height="80" style="fill: var(--warning);"></rect>
+                        <text class="bar-value" x="37" y="90">12%</text>
+                        <text class="bar-label" x="37" y="195">Gineco</text>
+
+                        <rect class="bar" x="80" y="130" width="35" height="50" style="fill: var(--warning);"></rect>
+                        <text class="bar-value" x="97" y="120">5%</text>
+                        <text class="bar-label" x="97" y="195">Obstet</text>
+
+                        <rect class="bar" x="140" y="110" width="35" height="70" style="fill: var(--warning);"></rect>
+                        <text class="bar-value" x="157" y="100">8%</text>
+                        <text class="bar-label" x="157" y="195">General</text>
+                    </svg>
+                </div>
+
+                <!-- Reporte 3 -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Cancelaciones (RF-030)</span>
+                    </div>
+                    <p style="font-size: 24px; font-weight: 700; color: var(--danger);">24 Citas</p>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Citas canceladas y motivos</p>
+                    <svg class="chart-svg">
+                        <!-- Bar chart -->
+                        <rect class="bar" x="20" y="60" width="35" height="120" style="fill: var(--danger);"></rect>
+                        <text class="bar-value" x="37" y="50">14</text>
+                        <text class="bar-label" x="37" y="195">Personal</text>
+
+                        <rect class="bar" x="80" y="120" width="35" height="60" style="fill: var(--danger);"></rect>
+                        <text class="bar-value" x="97" y="110">7</text>
+                        <text class="bar-label" x="97" y="195">Clima</text>
+
+                        <rect class="bar" x="140" y="150" width="35" height="30" style="fill: var(--danger);"></rect>
+                        <text class="bar-value" x="157" y="140">3</text>
+                        <text class="bar-label" x="157" y="195">Trabajo</text>
+                    </svg>
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="alert('Generando Reporte PDF Protegido Inmutable (RF-028)...')">
+                Exportar Reporte Protegido
+            </button>
+        </section>
+
+    </main>
+
+    <!-- ========================================= -->
+    <!-- OVERLAYS & MODALS -->
+    <!-- ========================================= -->
+
+    <!-- Session Warning Modal (RF-005) -->
+    <div id="sessionWarningModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 style="font-size: 18px; font-weight: 700; color: var(--warning); margin-bottom: 12px;">¡Advertencia de Inactividad!</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">
+                Por seguridad, tu sesión expira debido a inactividad en:
+            </p>
+            <p style="font-size: 24px; font-weight: 700; text-align: center; color: var(--danger); margin-bottom: 24px;" id="warningTimer">
+                2:00
+            </p>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <button class="btn btn-secondary" onclick="logoutSession()">Cerrar Sesión</button>
+                <button class="btn btn-primary" onclick="keepSessionAlive()">Continuar Trabajando</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payments Modal -->
+    <div id="paymentModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 480px;">
+            <h3 style="font-size: 18px; font-weight: 700; color: var(--primary-dark); margin-bottom: 12px;">Procesamiento de Pago (RF-021)</h3>
+            <div class="form-group">
+                <label class="form-label">Detalle de Cobro</label>
+                <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
+                    <span>Consulta Ginecológica</span>
+                    <span style="font-weight: 600;">$35.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
+                    <span>Copago Seguro</span>
+                    <span style="font-weight: 600;">-$10.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; border-top: 1px solid var(--border-color); padding-top: 6px;">
+                    <span>Total Neto</span>
+                    <span>$25.00</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="payMethod">Método de Pago (RF-023)</label>
+                <select id="payMethod" class="form-control" onchange="togglePayDetails()">
+                    <option value="card">Tarjeta de Crédito / Débito (Stripe)</option>
+                    <option value="transfer">Transferencia Directa (PSE / ACH)</option>
+                    <option value="cash">Efectivo en Sucursal</option>
+                </select>
+            </div>
+
+            <div id="cardDetailsContainer">
+                <div class="form-group">
+                    <label class="form-label">Número de Tarjeta</label>
+                    <input type="text" class="form-control" placeholder="4242 4242 4242 4242" maxlength="19">
+                </div>
+                <div class="grid-2" style="gap: 8px;">
+                    <div class="form-group">
+                        <label class="form-label">Vencimiento</label>
+                        <input type="text" class="form-control" placeholder="MM/AA" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CVC</label>
+                        <input type="password" class="form-control" placeholder="•••" maxlength="3">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closePaymentModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="processPayment()">Pagar $25.00</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Block -->
+    <script>
+        // Mock Databases
+        const mockDoctors = [
+            { id: "d1", name: "Dra. Lizeth Molina", specialty: "Ginecología", sucursal: "Matriz Sur" },
+            { id: "d2", name: "Dr. Santiago Rueda", specialty: "Obstetricia", sucursal: "Matriz Sur" },
+            { id: "d3", name: "Dra. Carmen Andrade", specialty: "Medicina General", sucursal: "La Arcadia" },
+            { id: "d4", name: "Dr. Marcelo Dávila", specialty: "Ginecología", sucursal: "Sangolquí" }
+        ];
+
+        let mockPatients = [
+            { cedula: "1723456789", name: "María Alejandra Pérez", email: "maria.perez@ejemplo.com", phone: "0998765432", consent: true },
+            { cedula: "1718293041", name: "Juan Carlos Guarderas", email: "juan.guarderas@ejemplo.com", phone: "0992345678", consent: true }
+        ];
+
+        let mockAppointments = [
+            { id: "app-1", datetime: "2026-07-15 09:30", doctor: "Dra. Lizeth Molina", sucursal: "Matriz Sur", specialty: "Ginecología", status: "CONFIRMADA", price: "$35.00" },
+            { id: "app-2", datetime: "2026-07-16 14:00", doctor: "Dra. Carmen Andrade", sucursal: "La Arcadia", specialty: "Medicina General", status: "PENDIENTE_PAGO", price: "$20.00" }
+        ];
+
+        // Session & Lockout State
+        let currentUser = null;
+        let loginAttempts = 0;
+        let isLockedOut = false;
+        let lockoutTimeLeft = 900; // 15 mins in seconds
+        let lockoutInterval = null;
+
+        let sessionTimeLeft = 900; // 15 mins session
+        let sessionInterval = null;
+        let inactSeconds = 0;
+        let warningActive = false;
+
+        // Booking flow temporary state
+        let selectedDoctor = null;
+        let selectedSlot = null;
+        let selectedDate = null;
+        let activePreReserva = null;
+        let prereservaTimeLeft = 900; // 15 mins for prereserva
+        let prereservaInterval = null;
+
+        // Initialize Page
+        window.onload = function() {
+            switchRole();
+            startGlobalInactivityTracker();
+        }
+
+        // Global Roles & Tabs Definition
+        const roleTabs = {
+            paciente: [
+                { id: "login", label: "Autenticación" },
+                { id: "registro", label: "Registro (LGPD)" },
+                { id: "reserva", label: "Pre-Reserva" },
+                { id: "citas", label: "Mis Citas" }
+            ],
+            recepcionista: [
+                { id: "busqueda", label: "Pacientes" },
+                { id: "reserva", label: "Agendamiento (Walk-in)" },
+                { id: "citas", label: "Listado Citas" }
+            ],
+            medico: [
+                { id: "busqueda", label: "Buscar Pacientes" },
+                { id: "medico", label: "Mi Disponibilidad" },
+                { id: "reportes", label: "Estadísticas" }
+            ],
+            admin: [
+                { id: "busqueda", label: "Historial Pacientes" },
+                { id: "config", label: "Horario Global" },
+                { id: "reportes", label: "Reportes Clínicos" }
+            ]
+        };
+
+        function switchRole() {
+            const role = document.getElementById("roleSelector").value;
+            const tabs = roleTabs[role];
+            const navContainer = document.getElementById("navTabsContainer");
+            navContainer.innerHTML = "";
+
+            // Inject tabs
+            tabs.forEach((tab, index) => {
+                const btn = document.createElement("button");
+                btn.className = `nav-tab ${index === 0 ? 'active' : ''}`;
+                btn.textContent = tab.label;
+                btn.onclick = () => activateTab(tab.id, btn);
+                navContainer.appendChild(btn);
+            });
+
+            // Activate first view
+            activateTab(tabs[0].id);
+
+            // Conditional Walkin Mode toggle visibility
+            const walkinContainer = document.getElementById("walkinToggleContainer");
+            if (role === "recepcionista") {
+                walkinContainer.style.display = "block";
+                document.getElementById("bookingCardTitle").textContent = "Agendamiento Recepcionista (RF-015)";
+            } else {
+                walkinContainer.style.display = "none";
+                document.getElementById("bookingCardTitle").textContent = "Pre-Reserva de Cita (RF-014)";
+            }
+
+            // Simulate logged user in some roles
+            if (role !== "paciente") {
+                currentUser = { role: role, name: "Usuario " + role };
+                document.getElementById("sessionTimerBadge").style.display = "flex";
+                resetSessionTimer();
+            } else {
+                currentUser = null;
+                document.getElementById("sessionTimerBadge").style.display = "none";
+            }
+
+            loadDoctorsForBooking();
+            loadAppointmentsTable();
+            searchPatients();
+        }
+
+        function activateTab(viewId, tabElement) {
+            // Remove active classes from all tabs
+            if (tabElement) {
+                const tabs = document.querySelectorAll(".nav-tab");
+                tabs.forEach(t => t.classList.remove("active"));
+                tabElement.classList.add("active");
+            }
+
+            // Hide all views
+            const views = document.querySelectorAll(".section-view");
+            views.forEach(v => v.classList.remove("active"));
+
+            // Show active view
+            const targetView = document.getElementById(`view-${viewId}`);
+            if (targetView) targetView.classList.add("active");
+        }
+
+        // =========================================
+        // SECURITY & AUTHENTICATION (RF-001/002/005/009)
+        // =========================================
+        function handleLogin() {
+            if (isLockedOut) return;
+
+            const email = document.getElementById("loginEmail").value;
+            const pass = document.getElementById("loginPass").value;
+
+            // Simple mock login auth
+            if (email === "paciente@ejemplo.com" && pass === "password123") {
+                loginAttempts = 0;
+                currentUser = { role: "paciente", name: "María Alejandra Pérez", email: email };
+                document.getElementById("sessionTimerBadge").style.display = "flex";
+                resetSessionTimer();
+                alert("Autenticación Exitosa. Sesión iniciada.");
+                
+                // Switch view to booking
+                activateTab("reserva");
+                // Update nav tabs highlighting
+                const tabs = document.querySelectorAll(".nav-tab");
+                tabs.forEach(t => {
+                    t.classList.remove("active");
+                    if (t.textContent === "Pre-Reserva") t.classList.add("active");
+                });
+            } else {
+                loginAttempts++;
+                if (loginAttempts >= 3) {
+                    isLockedOut = true;
+                    document.getElementById("lockoutAlert").style.display = "flex";
+                    document.getElementById("loginFormContainer").style.display = "none";
+                    startLockoutTimer();
+                } else {
+                    alert(`Credenciales Incorrectas. Intento ${loginAttempts} de 3 antes de bloqueo.`);
+                }
+            }
+        }
+
+        function triggerRecovery() {
+            const email = prompt("Ingrese su email registrado para recuperación (RF-002):");
+            if (email) {
+                alert("Se ha enviado un enlace de recuperación con token único válido por 1 hora a " + email);
+            }
+        }
+
+        function startLockoutTimer() {
+            lockoutTimeLeft = 900; // 15 mins
+            lockoutInterval = setInterval(() => {
+                lockoutTimeLeft--;
+                const min = Math.floor(lockoutTimeLeft / 60);
+                const sec = lockoutTimeLeft % 60;
+                document.getElementById("lockoutTimer").textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+
+                if (lockoutTimeLeft <= 0) {
+                    clearInterval(lockoutInterval);
+                    isLockedOut = false;
+                    loginAttempts = 0;
+                    document.getElementById("lockoutAlert").style.display = "none";
+                    document.getElementById("loginFormContainer").style.display = "block";
+                }
+            }, 1000);
+        }
+
+        // Sesión Expiración Automática (RF-005)
+        function startGlobalInactivityTracker() {
+            document.body.onmousemove = resetInactivity;
+            document.body.onkeypress = resetInactivity;
+            document.body.onclick = resetInactivity;
+
+            sessionInterval = setInterval(() => {
+                if (!currentUser) return;
+                inactSeconds++;
+                
+                // 13 mins of inactivity (780 seconds) triggers 2 min warning (120 seconds)
+                if (inactSeconds >= 780 && !warningActive) {
+                    triggerSessionWarning();
+                }
+
+                if (inactSeconds >= 900) {
+                    logoutSession();
+                    alert("Sesión Expirada por Inactividad (RF-005).");
+                }
+                
+                // Update badge text
+                const totalLeft = 900 - inactSeconds;
+                const m = Math.floor(totalLeft / 60);
+                const s = totalLeft % 60;
+                document.getElementById("sessionTimerText").textContent = `Sesión: ${m}:${s < 10 ? '0' : ''}${s}`;
+
+            }, 1000);
+        }
+
+        function resetInactivity() {
+            if (warningActive) return; // Freeze reset when modal warning is open
+            inactSeconds = 0;
+        }
+
+        function resetSessionTimer() {
+            inactSeconds = 0;
+            warningActive = false;
+            document.getElementById("sessionWarningModal").classList.remove("active");
+        }
+
+        function triggerSessionWarning() {
+            warningActive = true;
+            document.getElementById("sessionWarningModal").classList.add("active");
+            
+            let warningLeft = 120; // 2 mins warning
+            const timerEl = document.getElementById("warningTimer");
+
+            const warnInterval = setInterval(() => {
+                if (!warningActive) {
+                    clearInterval(warnInterval);
+                    return;
+                }
+                warningLeft--;
+                const m = Math.floor(warningLeft / 60);
+                const s = warningLeft % 60;
+                timerEl.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+                if (warningLeft <= 0) {
+                    clearInterval(warnInterval);
+                    logoutSession();
+                }
+            }, 1000);
+        }
+
+        function keepSessionAlive() {
+            resetSessionTimer();
+        }
+
+        function logoutSession() {
+            currentUser = null;
+            document.getElementById("sessionTimerBadge").style.display = "none";
+            document.getElementById("sessionWarningModal").classList.remove("active");
+            warningActive = false;
+            document.getElementById("roleSelector").value = "paciente";
+            switchRole();
+            alert("Sesión Cerrada (RF-004).");
+        }
+
+        // =========================================
+        // REGISTRATION & VALIDATION (RF-010/011/013)
+        // =========================================
+        function validateEcuadorianCedula(cedula) {
+            if (cedula.length !== 10) return false;
+            const region = parseInt(cedula.substring(0, 2));
+            if (region < 1 || region > 24) return false;
+
+            const lastDigit = parseInt(cedula.substring(9, 10));
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                let val = parseInt(cedula.substring(i, i + 1));
+                if (i % 2 === 0) {
+                    val *= 2;
+                    if (val > 9) val -= 9;
+                }
+                sum += val;
+            }
+            const modulo = sum % 10;
+            const calculated = modulo === 0 ? 0 : 10 - modulo;
+            return calculated === lastDigit;
+        }
+
+        // Input listener feedback
+        document.getElementById("regCedula").addEventListener("input", function() {
+            const val = this.value;
+            const feedback = document.getElementById("cedulaFeedback");
+            if (val.length === 10) {
+                if (validateEcuadorianCedula(val)) {
+                    feedback.textContent = "Cédula Válida (Módulo 10).";
+                    feedback.style.color = "var(--success)";
+                } else {
+                    feedback.textContent = "Cédula Inválida (Algoritmo fallido).";
+                    feedback.style.color = "var(--danger)";
+                }
+            } else {
+                feedback.textContent = "";
+            }
+        });
+
+        function handleRegistration() {
+            const cedula = document.getElementById("regCedula").value;
+            const nombre = document.getElementById("regNombre").value;
+            const email = document.getElementById("regEmail").value;
+            const celular = document.getElementById("regCelular").value;
+            const lgpdChecked = document.getElementById("regLgpd").checked;
+
+            if (!validateEcuadorianCedula(cedula)) {
+                alert("Error: Ingrese una cédula ecuatoriana válida.");
+                return;
+            }
+            if (!nombre || !email || !celular) {
+                alert("Error: Todos los campos son obligatorios.");
+                return;
+            }
+            if (!lgpdChecked) {
+                alert("Error (RF-013): Debe otorgar su consentimiento explícito de protección de datos.");
+                return;
+            }
+
+            // Register patient
+            mockPatients.push({
+                cedula: cedula,
+                name: nombre,
+                email: email,
+                phone: celular,
+                consent: true
+            });
+
+            document.getElementById("registrationSuccessAlert").style.display = "block";
+            
+            // Clear Form
+            document.getElementById("regCedula").value = "";
+            document.getElementById("regNombre").value = "";
+            document.getElementById("regEmail").value = "";
+            document.getElementById("regCelular").value = "";
+            document.getElementById("regLgpd").checked = false;
+            document.getElementById("cedulaFeedback").textContent = "";
+
+            setTimeout(() => {
+                document.getElementById("registrationSuccessAlert").style.display = "none";
+            }, 5000);
+        }
+
+        function searchPatients() {
+            const q = document.getElementById("searchQuery").value.toLowerCase();
+            const table = document.getElementById("patientSearchResultsTable");
+            table.innerHTML = "";
+
+            const filtered = mockPatients.filter(p => p.cedula.includes(q) || p.name.toLowerCase().includes(q));
+
+            filtered.forEach(p => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${p.cedula}</td>
+                    <td style="font-weight: 600;">${p.name}</td>
+                    <td>${p.email}</td>
+                    <td>${p.phone}</td>
+                    <td><span class="badge badge-success">Otorgado (LGPD)</span></td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;" onclick="selectPatientForBooking('${p.cedula}', '${p.name}')">
+                            Agendar Cita
+                        </button>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        function selectPatientForBooking(cedula, name) {
+            alert(`Paciente seleccionado: ${name}. Procediendo al agendamiento.`);
+            activateTab("reserva");
+            document.getElementById("bookingCardTitle").textContent = `Agendamiento para: ${name} (RF-015)`;
+            currentUser = { role: "recepcionista", name: name, cedula: cedula, isBookingForPatient: true };
+        }
+
+        // =========================================
+        // CITAS & AGENDA (RF-014/015/016/017/018)
+        // =========================================
+        function loadDoctorsForBooking() {
+            const sucursal = document.getElementById("bookSucursal").value;
+            const specialty = document.getElementById("bookEspecialidad").value;
+            const select = document.getElementById("bookMedico");
+            select.innerHTML = "";
+
+            const filtered = mockDoctors.filter(d => d.sucursal === sucursal && d.specialty === specialty);
+
+            if (filtered.length === 0) {
+                const opt = document.createElement("option");
+                opt.textContent = "No hay médicos disponibles";
+                select.appendChild(opt);
+                document.getElementById("slotsContainer").innerHTML = "<p style='color: var(--text-muted); font-size: 12px;'>No hay franjas horarias libres.</p>";
+                return;
+            }
+
+            filtered.forEach(d => {
+                const opt = document.createElement("option");
+                opt.value = d.id;
+                opt.textContent = d.name;
+                select.appendChild(opt);
+            });
+
+            loadSlots();
+        }
+
+        function loadSlots() {
+            const container = document.getElementById("slotsContainer");
+            container.innerHTML = "";
+            
+            const medSelect = document.getElementById("bookMedico").value;
+            if (!medSelect || medSelect === "No hay médicos disponibles") return;
+
+            // Generate mock slots
+            const slots = ["08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "14:00", "14:30", "15:00"];
+            
+            slots.forEach((slot, index) => {
+                const btn = document.createElement("div");
+                btn.className = "slot-btn";
+                // Mock disable some slots
+                if (index % 3 === 0) {
+                    btn.className += " disabled";
+                    btn.textContent = slot;
+                } else {
+                    btn.textContent = slot;
+                    btn.onclick = () => selectSlot(slot, btn);
+                }
+                container.appendChild(btn);
+            });
+        }
+
+        function selectSlot(slot, element) {
+            const btns = document.querySelectorAll(".slot-btn");
+            btns.forEach(b => b.classList.remove("active"));
+            
+            element.classList.add("active");
+            selectedSlot = slot;
+        }
+
+        function toggleWalkinMode() {
+            const checked = document.getElementById("walkinCheck").checked;
+            if (checked) {
+                alert("Modo Walk-in Activo: El espacio seleccionado se bloqueará y confirmará directamente sin requerir pasarela de pago Stripe (RF-016).");
+            }
+        }
+
+        function triggerPreReserva() {
+            const sucursal = document.getElementById("bookSucursal").value;
+            const specialty = document.getElementById("bookEspecialidad").value;
+            const medicoId = document.getElementById("bookMedico").value;
+            const date = document.getElementById("bookFecha").value;
+
+            if (!medicoId || medicoId === "No hay médicos disponibles") {
+                alert("Error: Seleccione un médico válido.");
+                return;
+            }
+            if (!date) {
+                alert("Error: Ingrese la fecha de la cita.");
+                return;
+            }
+            if (!selectedSlot) {
+                alert("Error: Seleccione un bloque horario libre.");
+                return;
+            }
+
+            const doc = mockDoctors.find(d => d.id === medicoId);
+
+            // Create Pre-Reserva
+            activePreReserva = {
+                datetime: `${date} ${selectedSlot}`,
+                doctor: doc.name,
+                sucursal: sucursal,
+                specialty: specialty,
+                price: "$25.00"
+            };
+
+            const isWalkin = document.getElementById("walkinCheck") ? document.getElementById("walkinCheck").checked : false;
+
+            if (isWalkin) {
+                // Direct confirmation for Walk-in (RF-016)
+                const newCita = {
+                    id: "app-" + (mockAppointments.length + 1),
+                    datetime: activePreReserva.datetime,
+                    doctor: activePreReserva.doctor,
+                    sucursal: activePreReserva.sucursal,
+                    specialty: activePreReserva.specialty,
+                    status: "CONFIRMADA",
+                    price: activePreReserva.price
+                };
+                mockAppointments.push(newCita);
+                activePreReserva = null;
+                alert("Cita de Walk-in Agendada y Confirmada Correctamente.");
+                loadAppointmentsTable();
+                activateTab("citas");
+            } else {
+                startPreReservaTimer();
+                updateBookingSummaryCard();
+            }
+        }
+
+        function cancelPreReserva() {
+            clearInterval(prereservaInterval);
+            activePreReserva = null;
+            updateBookingSummaryCard();
+            alert("Pre-reserva cancelada. El espacio ha sido liberado.");
+        }
+
+        function loadAppointmentsTable() {
+            const table = document.getElementById("appointmentsHistoryTable");
+            table.innerHTML = "";
+
+            mockAppointments.forEach(app => {
+                const tr = document.createElement("tr");
+                const badgeClass = app.status === "CONFIRMADA" ? "badge-success" : (app.status === "PENDIENTE_PAGO" ? "badge-warning" : "badge-danger");
+                
+                let actionBtn = "";
+                if (app.status === "CONFIRMADA") {
+                    actionBtn = `
+                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="printReceipt('${app.id}')">Recibo</button>
+                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="cancelAppointment('${app.id}')">Cancelar</button>
+                    `;
+                } else if (app.status === "PENDIENTE_PAGO") {
+                    actionBtn = `
+                        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;" onclick="payExistingAppointment('${app.id}', '${app.price}')">Pagar</button>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td style="font-weight: 600;">${app.datetime}</td>
+                    <td>${app.doctor}<br><span style="font-size: 11px; color: var(--text-muted);">${app.sucursal}</span></td>
+                    <td>${app.specialty}</td>
+                    <td><span class="badge ${badgeClass}">${app.status}</span></td>
+                    <td style="font-weight: 600;">${app.price}</td>
+                    <td><div style="display: flex; gap: 4px;">${actionBtn}</div></td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        function cancelAppointment(appId) {
+            const reason = prompt("Ingrese el motivo obligatorio de su cancelación (RF-018):");
+            if (!reason) {
+                alert("Error: El motivo de cancelación es obligatorio.");
+                return;
+            }
+
+            const app = mockAppointments.find(a => a.id === appId);
+            
+            // Reembolso calculador (4h)
+            // Simular fecha de cita vs fecha actual (hoy 2026-07-14)
+            // Si la cita es mañana o después (>4h), reembolso 100%. Si es hoy en menos de 4h, 0%.
+            const refundPercent = app.datetime.includes("2026-07-15") || app.datetime.includes("2026-07-16") ? 100 : 0;
+            
+            app.status = "CANCELADA";
+            loadAppointmentsTable();
+
+            if (refundPercent === 100) {
+                alert(`Cita Cancelada con éxito. Reembolso Procesado: 100% de la tarifa devuelta a su método de pago original (RF-024).`);
+            } else {
+                alert(`Cita Cancelada. De acuerdo con la política (<4 horas de anticipación), el cargo por cancelación es del 100%. Reembolso: $0.00.`);
+            }
+        }
+
+        // =========================================
+        // PAYMENTS (RF-021/022/023/024)
+        // =========================================
+        function openPaymentModal() {
+            document.getElementById("paymentModal").classList.add("active");
+        }
+
+        function closePaymentModal() {
+            document.getElementById("paymentModal").classList.remove("active");
+        }
+
+        function togglePayDetails() {
+            const method = document.getElementById("payMethod").value;
+            const container = document.getElementById("cardDetailsContainer");
+            if (method === "card") {
+                container.style.display = "block";
+            } else {
+                container.style.display = "none";
+            }
+        }
+
+        function processPayment() {
+            const method = document.getElementById("payMethod").value;
+            alert(`Procesando transacción mediante ${method === "card" ? "Stripe" : (method === "transfer" ? "Transferencia PSE" : "Efectivo")}...`);
+
+            clearInterval(prereservaInterval);
+
+            // Add new confirmed appointment
+            const newCita = {
+                id: "app-" + (mockAppointments.length + 1),
+                datetime: activePreReserva.datetime,
+                doctor: activePreReserva.doctor,
+                sucursal: activePreReserva.sucursal,
+                specialty: activePreReserva.specialty,
+                status: "CONFIRMADA",
+                price: activePreReserva.price
+            };
+
+            mockAppointments.push(newCita);
+            activePreReserva = null;
+            
+            closePaymentModal();
+            updateBookingSummaryCard();
+            loadAppointmentsTable();
+            
+            alert("Pago Exitoso. Su cita ha sido confirmada.");
+            activateTab("citas");
+            printReceipt(newCita.id);
+        }
+
+        function payExistingAppointment(appId, price) {
+            const app = mockAppointments.find(a => a.id === appId);
+            activePreReserva = {
+                datetime: app.datetime,
+                doctor: app.doctor,
+                sucursal: app.sucursal,
+                specialty: app.specialty,
+                price: price
+            };
+            openPaymentModal();
+        }
+
+        function printReceipt(appId) {
+            const app = mockAppointments.find(a => a.id === appId);
+            
+            // Create a temporary print div/modal simulation
+            const overlay = document.createElement("div");
+            overlay.className = "modal-overlay active";
+            overlay.onclick = function() { document.body.removeChild(overlay); };
+
+            const content = document.createElement("div");
+            content.className = "modal-content";
+            content.onclick = function(e) { e.stopPropagation(); };
+
+            content.innerHTML = `
+                <h3 style="font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 12px;">Comprobante de Pago Electrónico (RF-022)</h3>
+                <div class="receipt-container">
+                    <div class="receipt-header">
+                        <h4 style="font-size: 15px; font-weight: 700; color: var(--primary-dark);">Clinica Renacer</h4>
+                        <p style="font-size: 11px; color: var(--text-muted);">Quito, Ecuador | RUC: 1792456789001</p>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Código Cita:</span>
+                        <span style="font-weight: 600;">${app.id}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Paciente:</span>
+                        <span style="font-weight: 600;">${currentUser ? currentUser.name : "María Pérez"}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Médico:</span>
+                        <span style="font-weight: 600;">${app.doctor}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Sucursal:</span>
+                        <span style="font-weight: 600;">${app.sucursal}</span>
+                    </div>
+                    <div class="receipt-row">
+                        <span>Fecha y Hora:</span>
+                        <span style="font-weight: 600;">${app.datetime}</span>
+                    </div>
+                    <div class="receipt-row receipt-total">
+                        <span>Total Pagado:</span>
+                        <span>${app.price}</span>
+                    </div>
+                    <div class="receipt-qr">
+                        <div class="qr-placeholder">
+                            <!-- Draw simple barcode SVG representing QR -->
+                            <svg width="80" height="80" viewBox="0 0 100 100">
+                                <rect x="10" y="10" width="15" height="15" fill="black"/>
+                                <rect x="15" y="15" width="5" height="5" fill="white"/>
+                                <rect x="75" y="10" width="15" height="15" fill="black"/>
+                                <rect x="10" y="75" width="15" height="15" fill="black"/>
+                                <rect x="40" y="40" width="20" height="20" fill="black"/>
+                                <rect x="45" y="45" width="10" height="10" fill="white"/>
+                                <rect x="75" y="75" width="5" height="5" fill="black"/>
+                                <rect x="85" y="85" width="5" height="5" fill="black"/>
+                            </svg>
+                        </div>
+                        <span style="font-size: 10px; color: var(--text-muted);">QR de Verificación Legal Ecuatoriana</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 20px;">
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="window.print()">Imprimir Comprobante</button>
+                    <button class="btn btn-primary" style="flex: 1;" id="closeReceiptBtn">Cerrar</button>
+                </div>
+            `;
+
+            overlay.appendChild(content);
+            document.body.appendChild(overlay);
+
+            document.getElementById("closeReceiptBtn").onclick = function() {
+                document.body.removeChild(overlay);
+            };
+        }
+    </script>
+
+</body>
+</html>
