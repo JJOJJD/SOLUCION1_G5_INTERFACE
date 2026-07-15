@@ -991,6 +991,56 @@
                     Guardar Configuración Global
                 </button>
             </div>
+
+            <!-- Auditoría de Inicios/Cierres (RF-008) -->
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header">
+                    <span class="card-title">Auditoría de Inicios y Cierres de Sesión</span>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                    Registro inmutable y cronológico de accesos de seguridad (RBAC).
+                </p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha/Hora</th>
+                                <th>Usuario</th>
+                                <th>Acción</th>
+                                <th>IP de Conexión</th>
+                                <th>Dispositivo</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditLogsTable">
+                            <tr>
+                                <td>2026-07-15 08:46:12</td>
+                                <td>admin@renacer.com</td>
+                                <td>Inicio de Sesión (Autenticado)</td>
+                                <td>192.168.100.15</td>
+                                <td>Windows 11 / Chrome 126</td>
+                                <td><span class="badge badge-success">Exitoso</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026-07-15 08:45:02</td>
+                                <td>paciente@renacer.com</td>
+                                <td>Cierre de Sesión (Manual)</td>
+                                <td>190.152.12.84</td>
+                                <td>Android 14 / Firefox Mobile</td>
+                                <td><span class="badge badge-success">Exitoso</span></td>
+                            </tr>
+                            <tr>
+                                <td>2026-07-15 08:40:18</td>
+                                <td>recep@renacer.com</td>
+                                <td>Inicio de Sesión (Autenticado)</td>
+                                <td>192.168.100.22</td>
+                                <td>Windows 10 / Edge 122</td>
+                                <td><span class="badge badge-success">Exitoso</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
 
         <!-- ========================================= -->
@@ -1262,9 +1312,31 @@
                     name: account.name
                 };
 
-                updateHeaderUserUI();
+updateHeaderUserUI();
                 setupTabsForRole(account.role);
                 resetSessionTimer();
+                
+                // Append log to audit table
+                const auditTable = document.getElementById("auditLogsTable");
+                if (auditTable) {
+                    const tr = document.createElement("tr");
+                    const now = new Date();
+                    const dateStr = now.getFullYear() + "-" + 
+                                    (now.getMonth() + 1).toString().padStart(2, '0') + "-" + 
+                                    now.getDate().toString().padStart(2, '0') + " " + 
+                                    now.getHours().toString().padStart(2, '0') + ":" + 
+                                    now.getMinutes().toString().padStart(2, '0') + ":" + 
+                                    now.getSeconds().toString().padStart(2, '0');
+                    tr.innerHTML = `
+                        <td>${dateStr}</td>
+                        <td>${email}</td>
+                        <td>Inicio de Sesión (Autenticado)</td>
+                        <td>192.168.100.12</td>
+                        <td>Navegador Cliente / Dispositivo Móvil</td>
+                        <td><span class="badge badge-success">Exitoso</span></td>
+                    `;
+                    auditTable.insertBefore(tr, auditTable.firstChild);
+                }
                 
                 alert(`¡Bienvenido! Sesión iniciada correctamente como ${account.name}.`);
 
@@ -1465,6 +1537,30 @@
         }
 
         function logoutSession() {
+            // Append log to audit table before clearing user
+            if (currentUser) {
+                const auditTable = document.getElementById("auditLogsTable");
+                if (auditTable) {
+                    const tr = document.createElement("tr");
+                    const now = new Date();
+                    const dateStr = now.getFullYear() + "-" + 
+                                    (now.getMonth() + 1).toString().padStart(2, '0') + "-" + 
+                                    now.getDate().toString().padStart(2, '0') + " " + 
+                                    now.getHours().toString().padStart(2, '0') + ":" + 
+                                    now.getMinutes().toString().padStart(2, '0') + ":" + 
+                                    now.getSeconds().toString().padStart(2, '0');
+                    tr.innerHTML = `
+                        <td>${dateStr}</td>
+                        <td>${currentUser.email}</td>
+                        <td>Cierre de Sesión (Manual)</td>
+                        <td>192.168.100.12</td>
+                        <td>Navegador Cliente / Dispositivo Móvil</td>
+                        <td><span class="badge badge-success">Exitoso</span></td>
+                    `;
+                    auditTable.insertBefore(tr, auditTable.firstChild);
+                }
+            }
+
             currentUser = null;
             updateHeaderUserUI();
             resetSessionTimer();
