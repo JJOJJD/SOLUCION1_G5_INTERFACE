@@ -48,6 +48,7 @@
             top: 0;
             z-index: 100;
             box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
 
         .logo-container {
@@ -67,6 +68,7 @@
             color: white;
             font-weight: 700;
             font-size: 20px;
+            flex-shrink: 0;
         }
 
         .logo-text h1 {
@@ -84,6 +86,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .role-label {
@@ -117,6 +120,12 @@
             display: flex;
             gap: 8px;
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .nav-container::-webkit-scrollbar {
+            display: none;
         }
 
         .nav-tab {
@@ -130,6 +139,7 @@
             cursor: pointer;
             white-space: nowrap;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
         .nav-tab:hover {
@@ -165,6 +175,7 @@
             padding: 24px;
             box-shadow: var(--shadow-sm);
             margin-bottom: 24px;
+            transition: all 0.3s ease;
         }
 
         .card-header {
@@ -174,6 +185,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .card-title {
@@ -244,6 +257,7 @@
         .form-check input {
             margin-top: 4px;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .form-check label {
@@ -265,6 +279,7 @@
             outline: none;
             transition: all 0.2s;
             gap: 8px;
+            width: auto;
         }
 
         .btn-primary {
@@ -336,6 +351,7 @@
             overflow-x: auto;
             border: 1px solid var(--border-color);
             border-radius: 8px;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -343,6 +359,7 @@
             border-collapse: collapse;
             font-size: 13px;
             text-align: left;
+            min-width: 600px;
         }
 
         th {
@@ -567,6 +584,40 @@
             font-weight: 600;
         }
 
+        /* Mobile Adjustments (max-width: 768px) */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+                padding: 12px 16px;
+            }
+
+            .logo-container {
+                justify-content: center;
+            }
+
+            .role-selector-container {
+                justify-content: space-between;
+                width: 100%;
+                gap: 8px;
+            }
+
+            .role-selector {
+                flex-grow: 1;
+                text-align: center;
+            }
+
+            .card {
+                padding: 16px;
+                border-radius: 8px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -687,7 +738,7 @@
                     <input type="text" id="regCelular" class="form-control" placeholder="0998765432" maxlength="10">
                 </div>
 
-                <!-- LGPD Consent check -->
+                <!-- LGPD Consent check (RF-013) -->
                 <div class="form-check">
                     <input type="checkbox" id="regLgpd">
                     <label for="regLgpd">
@@ -710,8 +761,8 @@
                     <span class="card-title">Búsqueda de Pacientes Existentes</span>
                 </div>
 
-                <div class="form-group" style="max-width: 500px; display: flex; gap: 8px;">
-                    <input type="text" id="searchQuery" class="form-control" placeholder="Buscar por Cédula o Nombre...">
+                <div class="form-group" style="max-width: 500px; display: flex; gap: 8px; flex-wrap: wrap;">
+                    <input type="text" id="searchQuery" class="form-control" placeholder="Buscar por Cédula o Nombre..." style="flex: 1; min-width: 200px;">
                     <button class="btn btn-primary" onclick="searchPatients()">Buscar</button>
                 </div>
 
@@ -1042,7 +1093,7 @@
     <!-- OVERLAYS & MODALS -->
     <!-- ========================================= -->
 
-    <!-- Session Warning Modal -->
+    <!-- Session Warning Modal (RF-005) -->
     <div id="sessionWarningModal" class="modal-overlay">
         <div class="modal-content">
             <h3 style="font-size: 18px; font-weight: 700; color: var(--warning); margin-bottom: 12px;">¡Advertencia de Inactividad!</h3>
@@ -1062,7 +1113,7 @@
     <!-- Payments Modal -->
     <div id="paymentModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 480px;">
-            <h3 style="font-size: 18px; font-weight: 700; color: var(--primary-dark); margin-bottom: 12px;">Procesamiento de Pago</h3>
+            <h3>Procesamiento de Pago</h3>
             <div class="form-group">
                 <label class="form-label">Detalle de Cobro</label>
                 <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
@@ -1306,7 +1357,7 @@
             }, 1000);
         }
 
-        // Sesión Expiración Automática
+        // Sesión Expiración Automática (RF-005)
         function startGlobalInactivityTracker() {
             document.body.onmousemove = resetInactivity;
             document.body.onkeypress = resetInactivity;
@@ -1602,7 +1653,7 @@
             const isWalkin = document.getElementById("walkinCheck") ? document.getElementById("walkinCheck").checked : false;
 
             if (isWalkin) {
-                // Direct confirmation for Walk-in
+                // Direct confirmation for Walk-in (RF-016)
                 const newCita = {
                     id: "app-" + (mockAppointments.length + 1),
                     datetime: activePreReserva.datetime,
@@ -1623,6 +1674,75 @@
             }
         }
 
+        function startPreReservaTimer() {
+            prereservaTimeLeft = 900; // 15 mins
+            clearInterval(prereservaInterval);
+
+            prereservaInterval = setInterval(() => {
+                prereservaTimeLeft--;
+                const min = Math.floor(prereservaTimeLeft / 60);
+                const sec = prereservaTimeLeft % 60;
+                
+                const timerEl = document.getElementById("prereservaTimer");
+                if (timerEl) {
+                    timerEl.textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+                }
+
+                if (prereservaTimeLeft <= 0) {
+                    clearInterval(prereservaInterval);
+                    activePreReserva = null;
+                    updateBookingSummaryCard();
+                    alert("El tiempo de tu pre-reserva (15 min) ha expirado. El espacio se ha liberado.");
+                }
+            }, 1000);
+        }
+
+        function updateBookingSummaryCard() {
+            const card = document.getElementById("bookingSummaryContent");
+            if (!activePreReserva) {
+                card.innerHTML = `
+                    <p style="color: var(--text-muted); text-align: center; padding: 40px 0;">
+                        No tienes ninguna cita pre-reservada en este momento.
+                    </p>
+                `;
+                return;
+            }
+
+            card.innerHTML = `
+                <div style="background-color: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; font-weight: 700; color: var(--primary-dark);">PRE-RESERVA ACTIVA</span>
+                        <span id="prereservaTimer" style="font-size: 14px; font-weight: 700; color: var(--danger);">15:00</span>
+                    </div>
+                </div>
+                <div class="receipt-row">
+                    <span style="color: var(--text-muted);">Especialista:</span>
+                    <span style="font-weight: 600;">${activePreReserva.doctor}</span>
+                </div>
+                <div class="receipt-row">
+                    <span style="color: var(--text-muted);">Especialidad:</span>
+                    <span style="font-weight: 600;">${activePreReserva.specialty}</span>
+                </div>
+                <div class="receipt-row">
+                    <span style="color: var(--text-muted);">Sucursal:</span>
+                    <span style="font-weight: 600;">${activePreReserva.sucursal}</span>
+                </div>
+                <div class="receipt-row">
+                    <span style="color: var(--text-muted);">Fecha y Hora:</span>
+                    <span style="font-weight: 600;">${activePreReserva.datetime}</span>
+                </div>
+                <div class="receipt-row" style="margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                    <span style="color: var(--text-muted); font-weight: 700;">Copago Neto:</span>
+                    <span style="font-weight: 700; color: var(--primary-dark);">${activePreReserva.price}</span>
+                </div>
+
+                <div style="display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" style="flex: 1; min-width: 100px;" onclick="cancelPreReserva()">Cancelar</button>
+                    <button class="btn btn-primary" style="flex: 2; min-width: 150px;" onclick="openPaymentModal()">Pagar y Confirmar</button>
+                </div>
+            `;
+        }
+
         function cancelPreReserva() {
             clearInterval(prereservaInterval);
             activePreReserva = null;
@@ -1641,12 +1761,12 @@
                 let actionBtn = "";
                 if (app.status === "CONFIRMADA") {
                     actionBtn = `
-                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;" onclick="printReceipt('${app.id}')">Recibo</button>
-                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="cancelAppointment('${app.id}')">Cancelar</button>
+                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; width: auto;" onclick="printReceipt('${app.id}')">Recibo</button>
+                        <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px; width: auto;" onclick="cancelAppointment('${app.id}')">Cancelar</button>
                     `;
                 } else if (app.status === "PENDIENTE_PAGO") {
                     actionBtn = `
-                        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;" onclick="payExistingAppointment('${app.id}', '${app.price}')">Pagar</button>
+                        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px; width: auto;" onclick="payExistingAppointment('${app.id}', '${app.price}')">Pagar</button>
                     `;
                 }
 
@@ -1656,7 +1776,7 @@
                     <td>${app.specialty}</td>
                     <td><span class="badge ${badgeClass}">${app.status}</span></td>
                     <td style="font-weight: 600;">${app.price}</td>
-                    <td><div style="display: flex; gap: 4px;">${actionBtn}</div></td>
+                    <td><div style="display: flex; gap: 4px; flex-wrap: wrap;">${actionBtn}</div></td>
                 `;
                 table.appendChild(tr);
             });
@@ -1809,7 +1929,7 @@
                     </div>
                 </div>
                 <div style="display: flex; gap: 8px; margin-top: 20px;">
-                    <button class="btn btn-secondary" style="flex: 1;" onclick="window.print()">Imprimir Comprobante</button>
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="window.print()">Imprimir</button>
                     <button class="btn btn-primary" style="flex: 1;" id="closeReceiptBtn">Cerrar</button>
                 </div>
             `;
