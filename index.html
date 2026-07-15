@@ -82,35 +82,31 @@
             color: var(--text-muted);
         }
 
-        .role-selector-container {
+        .user-badge-container {
             display: flex;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .role-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
+        .user-info-text {
+            text-align: right;
         }
 
-        .role-selector {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-neutral);
-            font-weight: 600;
+        .user-name {
             font-size: 13px;
-            color: var(--primary-dark);
-            cursor: pointer;
-            outline: none;
-            transition: all 0.2s;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
-        .role-selector:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px var(--primary-light);
+        .user-role {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: uppercase;
+            background-color: var(--primary-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
         }
 
         .nav-container {
@@ -308,12 +304,6 @@
 
         .btn-danger:hover {
             background-color: #dc2626;
-        }
-
-        .btn-disabled {
-            background-color: #cbd5e1;
-            color: #94a3b8;
-            cursor: not-allowed;
         }
 
         /* Alert Box */
@@ -597,15 +587,10 @@
                 justify-content: center;
             }
 
-            .role-selector-container {
+            .user-badge-container {
                 justify-content: space-between;
                 width: 100%;
                 gap: 8px;
-            }
-
-            .role-selector {
-                flex-grow: 1;
-                text-align: center;
             }
 
             .card {
@@ -632,24 +617,15 @@
             </div>
         </div>
 
-        <div class="role-selector-container">
-            <div id="sessionTimerBadge" class="session-timer-badge" style="display: none;">
-                <span class="pulse-dot"></span>
-                <span id="sessionTimerText">Sesión: 15:00</span>
-            </div>
-            <span class="role-label">MODO ROL:</span>
-            <select id="roleSelector" class="role-selector" onchange="switchRole()">
-                <option value="paciente">Paciente</option>
-                <option value="recepcionista">Recepcionista</option>
-                <option value="medico">Médico</option>
-                <option value="admin">Administrador</option>
-            </select>
+        <!-- Logged user info header block (updates dynamically on login) -->
+        <div class="user-badge-container" id="headerUserContainer">
+            <span style="font-size: 12px; color: var(--text-muted);">Sin sesión activa</span>
         </div>
     </header>
 
-    <!-- Nav tabs -->
-    <nav class="nav-container" id="navTabsContainer">
-        <!-- Tabs are injected dynamically depending on selected role -->
+    <!-- Nav tabs (Only visible when user is logged in) -->
+    <nav class="nav-container" id="navTabsContainer" style="display: none;">
+        <!-- Tabs are injected dynamically depending on authenticated role -->
     </nav>
 
     <!-- Main Content Area -->
@@ -665,14 +641,22 @@
                     <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
                         Portal integral para agendamiento de citas, pagos de copagos y consultas de agendas médicas en el sector Sur de Quito y Sangolquí.
                     </p>
-                    <div class="alert alert-info">
-                        <strong>Demo Roles:</strong> Utiliza el selector superior para cambiar de rol o simula el inicio de sesión aquí.
+                    <div style="background-color: #f1f5f9; padding: 16px; border-radius: 8px; border-left: 4px solid var(--primary);">
+                        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">Cuentas de Demostración de Roles (RBAC):</h4>
+                        <ul style="font-size: 12px; color: var(--text-muted); list-style: none; display: flex; flex-direction: column; gap: 4px;">
+                            <li>🔑 <strong>Paciente:</strong> <code style="background:#e2e8f0; padding:2px 4px; border-radius:4px;">paciente@renacer.com</code> / <code style="background:#e2e8f0; padding:2px 4px; border-radius:4px;">paciente123</code></li>
+                            <li>🔑 <strong>Recepcionista:</strong> <code style="background:#e2e8f0; padding:2px 4px; border-radius:4px;">recep@renacer.com</code> / <code style="background:#e2e8f0; padding:2px 4px; border-radius:4px;">recep123</code></li>
+                            <li>🔑 <strong>Médico:</strong> <code style="background:#e2e8f0; padding:2px 4px; border-radius:4px;">medico@renacer.com</code> / <code style="background:#e2e8f0; padding:2px 4px; border-radius:4px;">medico123</code></li>
+                            <li>🔑 <strong>Administrador:</strong> <code style="background:#e2e8f0; padding:2px 4px; border-radius:4px;">admin@renacer.com</code> / <code style="background:#e2e8f0; padding:2px 4px; border-radius:4px;">admin123</code></li>
+                        </ul>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-header">
-                        <span class="card-title">Iniciar Sesión</span>
+                    <!-- Navigation tabs inside Login for Register switch -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                        <button class="nav-tab active" id="loginTabBtn" onclick="toggleAuthView('login')">Iniciar Sesión</button>
+                        <button class="nav-tab" id="registerTabBtn" onclick="toggleAuthView('register')">Registrar Paciente Nuevo</button>
                     </div>
 
                     <!-- Lockout alert -->
@@ -681,15 +665,15 @@
                         <span id="lockoutTimer" style="font-weight: 700;">15:00</span>
                     </div>
 
-                    <div id="loginFormContainer">
+                    <div id="loginFormSubContainer">
                         <div class="form-group">
                             <label class="form-label" for="loginEmail">Correo Electrónico</label>
-                            <input type="email" id="loginEmail" class="form-control" placeholder="paciente@ejemplo.com" value="paciente@ejemplo.com">
+                            <input type="email" id="loginEmail" class="form-control" placeholder="paciente@renacer.com" value="paciente@renacer.com">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="loginPass">Contraseña</label>
-                            <input type="password" id="loginPass" class="form-control" placeholder="••••••••" value="password123">
+                            <input type="password" id="loginPass" class="form-control" placeholder="••••••••" value="paciente123">
                         </div>
 
                         <button id="loginBtn" class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="handleLogin()">
@@ -711,10 +695,11 @@
             <div class="card" style="max-width: 600px; margin: 0 auto;">
                 <div class="card-header">
                     <span class="card-title">Registro de Paciente Nuevo</span>
+                    <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11px; width: auto;" onclick="toggleAuthView('login')">Volver al Login</button>
                 </div>
 
                 <div id="registrationSuccessAlert" class="alert alert-success" style="display: none;">
-                    <strong>Registro Exitoso:</strong> El paciente ha sido creado correctamente cumpliendo con la validación de cédula y LGPD.
+                    <strong>Registro Exitoso:</strong> El paciente ha sido creado correctamente cumpliendo con la validación de cédula y LGPD. Proceda a iniciar sesión.
                 </div>
 
                 <div class="form-group">
@@ -899,7 +884,7 @@
                 <div class="card-header">
                     <span class="card-title">Autogestión de Disponibilidad por Médico</span>
                 </div>
-                <div class="alert alert-info">
+                <div class="alert alert-info" id="medNameAlertLabel">
                     <strong>Médico:</strong> Dr. Santiago Rueda | Especialidad: Obstetricia | Sucursal: Matriz Sur
                 </div>
 
@@ -936,7 +921,7 @@
                         <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Mis Especialidades Habilitadas</h3>
                         <div class="form-check">
                             <input type="checkbox" id="spec1" checked disabled>
-                            <label for="spec1">Obstetricia (Primaria)</label>
+                            <label for="spec1">Especialidad Primaria</label>
                         </div>
                         <div class="form-check">
                             <input type="checkbox" id="spec2" checked>
@@ -944,7 +929,7 @@
                         </div>
                         <div class="form-check">
                             <input type="checkbox" id="spec3">
-                            <label for="spec3">Ginecología</label>
+                            <label for="spec3">Ginecología / Obstetricia</label>
                         </div>
                         <button class="btn btn-secondary" style="margin-top: 16px;" onclick="alert('Especialidades guardadas por el Administrador.')">
                             Actualizar Especialidades
@@ -1183,14 +1168,21 @@
             { id: "app-2", datetime: "2026-07-16 14:00", doctor: "Dra. Carmen Andrade", sucursal: "La Arcadia", specialty: "Medicina General", status: "PENDIENTE_PAGO", price: "$20.00" }
         ];
 
+        // Accounts list (RBAC config)
+        const mockAccounts = {
+            "paciente@renacer.com": { pass: "paciente123", role: "paciente", name: "María Alejandra Pérez" },
+            "recep@renacer.com": { pass: "recep123", role: "recepcionista", name: "Sandra López (Recepción)" },
+            "medico@renacer.com": { pass: "medico123", role: "medico", name: "Dr. Santiago Rueda (Médico)" },
+            "admin@renacer.com": { pass: "admin123", role: "admin", name: "Ing. Javier R. (Administrador)" }
+        };
+
         // Session & Lockout State
         let currentUser = null;
         let loginAttempts = 0;
         let isLockedOut = false;
-        let lockoutTimeLeft = 900; // 15 mins in seconds
+        let lockoutTimeLeft = 900; // 15 mins
         let lockoutInterval = null;
 
-        let sessionTimeLeft = 900; // 15 mins session
         let sessionInterval = null;
         let inactSeconds = 0;
         let warningActive = false;
@@ -1200,20 +1192,18 @@
         let selectedSlot = null;
         let selectedDate = null;
         let activePreReserva = null;
-        let prereservaTimeLeft = 900; // 15 mins for prereserva
+        let prereservaTimeLeft = 900; // 15 mins
         let prereservaInterval = null;
 
         // Initialize Page
         window.onload = function() {
-            switchRole();
+            updateHeaderUserUI();
             startGlobalInactivityTracker();
         }
 
         // Global Roles & Tabs Definition
         const roleTabs = {
             paciente: [
-                { id: "login", label: "Autenticación" },
-                { id: "registro", label: "Registro (LGPD)" },
                 { id: "reserva", label: "Pre-Reserva" },
                 { id: "citas", label: "Mis Citas" }
             ],
@@ -1234,13 +1224,73 @@
             ]
         };
 
-        function switchRole() {
-            const role = document.getElementById("roleSelector").value;
+        function toggleAuthView(view) {
+            const loginBtn = document.getElementById("loginTabBtn");
+            const regBtn = document.getElementById("registerTabBtn");
+            const subContainer = document.getElementById("loginFormSubContainer");
+            const regView = document.getElementById("view-registro");
+
+            if (view === "login") {
+                loginBtn.classList.add("active");
+                regBtn.classList.remove("active");
+                subContainer.style.display = "block";
+                regView.style.display = "none";
+                document.getElementById("view-login").classList.add("active");
+            } else {
+                loginBtn.classList.remove("active");
+                regBtn.classList.add("active");
+                subContainer.style.display = "none";
+                regView.style.display = "block";
+                document.getElementById("view-login").classList.remove("active");
+            }
+        }
+
+        function handleLogin() {
+            if (isLockedOut) return;
+
+            const email = document.getElementById("loginEmail").value.trim();
+            const pass = document.getElementById("loginPass").value;
+
+            const account = mockAccounts[email];
+
+            if (account && account.pass === pass) {
+                // Successful Auth
+                loginAttempts = 0;
+                currentUser = {
+                    email: email,
+                    role: account.role,
+                    name: account.name
+                };
+
+                updateHeaderUserUI();
+                setupTabsForRole(account.role);
+                resetSessionTimer();
+                
+                alert(`¡Bienvenido! Sesión iniciada correctamente como ${account.name}.`);
+
+                // Navigate to the first allowed tab
+                const firstTabId = roleTabs[account.role][0].id;
+                activateTab(firstTabId);
+            } else {
+                loginAttempts++;
+                if (loginAttempts >= 3) {
+                    isLockedOut = true;
+                    document.getElementById("lockoutAlert").style.display = "flex";
+                    document.getElementById("loginFormSubContainer").style.display = "none";
+                    startLockoutTimer();
+                } else {
+                    alert(`Credenciales Incorrectas. Intento ${loginAttempts} de 3 antes de bloqueo.`);
+                }
+            }
+        }
+
+        function setupTabsForRole(role) {
             const tabs = roleTabs[role];
             const navContainer = document.getElementById("navTabsContainer");
             navContainer.innerHTML = "";
+            navContainer.style.display = "flex";
 
-            // Inject tabs
+            // Inject role tabs
             tabs.forEach((tab, index) => {
                 const btn = document.createElement("button");
                 btn.className = `nav-tab ${index === 0 ? 'active' : ''}`;
@@ -1248,9 +1298,6 @@
                 btn.onclick = () => activateTab(tab.id, btn);
                 navContainer.appendChild(btn);
             });
-
-            // Activate first view
-            activateTab(tabs[0].id);
 
             // Conditional Walkin Mode toggle visibility
             const walkinContainer = document.getElementById("walkinToggleContainer");
@@ -1262,19 +1309,38 @@
                 document.getElementById("bookingCardTitle").textContent = "Pre-Reserva de Cita";
             }
 
-            // Simulate logged user in some roles
-            if (role !== "paciente") {
-                currentUser = { role: role, name: "Usuario " + role };
-                document.getElementById("sessionTimerBadge").style.display = "flex";
-                resetSessionTimer();
-            } else {
-                currentUser = null;
-                document.getElementById("sessionTimerBadge").style.display = "none";
+            // Customize Doctor Autogestion sub-labels depending on login context
+            const medAlertLabel = document.getElementById("medNameAlertLabel");
+            if (role === "medico") {
+                medAlertLabel.innerHTML = `<strong>Médico Habilitado:</strong> Dr. Santiago Rueda | Especialidad: Obstetricia | Sucursal: Matriz Sur`;
             }
 
             loadDoctorsForBooking();
             loadAppointmentsTable();
             searchPatients();
+        }
+
+        function updateHeaderUserUI() {
+            const container = document.getElementById("headerUserContainer");
+            if (!currentUser) {
+                container.innerHTML = `
+                    <span class="role-label" style="font-weight: 500;">Sin sesión activa</span>
+                `;
+                document.getElementById("navTabsContainer").style.display = "none";
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="session-timer-badge" id="sessionTimerBadge">
+                    <span class="pulse-dot"></span>
+                    <span id="sessionTimerText">Sesión: 15:00</span>
+                </div>
+                <div class="user-info-text">
+                    <div class="user-name">${currentUser.name}</div>
+                    <div class="user-role">${currentUser.role}</div>
+                </div>
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px; width: auto;" onclick="logoutSession()">Salir</button>
+            `;
         }
 
         function activateTab(viewId, tabElement) {
@@ -1283,6 +1349,13 @@
                 const tabs = document.querySelectorAll(".nav-tab");
                 tabs.forEach(t => t.classList.remove("active"));
                 tabElement.classList.add("active");
+            } else {
+                // If activated from script, set first tab as active
+                const tabs = document.querySelectorAll(".nav-tab");
+                if (tabs.length > 0) {
+                    tabs.forEach(t => t.classList.remove("active"));
+                    tabs[0].classList.add("active");
+                }
             }
 
             // Hide all views
@@ -1292,44 +1365,6 @@
             // Show active view
             const targetView = document.getElementById(`view-${viewId}`);
             if (targetView) targetView.classList.add("active");
-        }
-
-        // =========================================
-        // SECURITY & AUTHENTICATION (RF-001/002/005/009)
-        // =========================================
-        function handleLogin() {
-            if (isLockedOut) return;
-
-            const email = document.getElementById("loginEmail").value;
-            const pass = document.getElementById("loginPass").value;
-
-            // Simple mock login auth
-            if (email === "paciente@ejemplo.com" && pass === "password123") {
-                loginAttempts = 0;
-                currentUser = { role: "paciente", name: "María Alejandra Pérez", email: email };
-                document.getElementById("sessionTimerBadge").style.display = "flex";
-                resetSessionTimer();
-                alert("Autenticación Exitosa. Sesión iniciada.");
-                
-                // Switch view to booking
-                activateTab("reserva");
-                // Update nav tabs highlighting
-                const tabs = document.querySelectorAll(".nav-tab");
-                tabs.forEach(t => {
-                    t.classList.remove("active");
-                    if (t.textContent === "Pre-Reserva") t.classList.add("active");
-                });
-            } else {
-                loginAttempts++;
-                if (loginAttempts >= 3) {
-                    isLockedOut = true;
-                    document.getElementById("lockoutAlert").style.display = "flex";
-                    document.getElementById("loginFormContainer").style.display = "none";
-                    startLockoutTimer();
-                } else {
-                    alert(`Credenciales Incorrectas. Intento ${loginAttempts} de 3 antes de bloqueo.`);
-                }
-            }
         }
 
         function triggerRecovery() {
@@ -1352,7 +1387,7 @@
                     isLockedOut = false;
                     loginAttempts = 0;
                     document.getElementById("lockoutAlert").style.display = "none";
-                    document.getElementById("loginFormContainer").style.display = "block";
+                    document.getElementById("loginFormSubContainer").style.display = "block";
                 }
             }, 1000);
         }
@@ -1381,7 +1416,11 @@
                 const totalLeft = 900 - inactSeconds;
                 const m = Math.floor(totalLeft / 60);
                 const s = totalLeft % 60;
-                document.getElementById("sessionTimerText").textContent = `Sesión: ${m}:${s < 10 ? '0' : ''}${s}`;
+                
+                const textEl = document.getElementById("sessionTimerText");
+                if (textEl) {
+                    textEl.textContent = `Sesión: ${m}:${s < 10 ? '0' : ''}${s}`;
+                }
 
             }, 1000);
         }
@@ -1427,16 +1466,22 @@
 
         function logoutSession() {
             currentUser = null;
-            document.getElementById("sessionTimerBadge").style.display = "none";
-            document.getElementById("sessionWarningModal").classList.remove("active");
+            updateHeaderUserUI();
+            resetSessionTimer();
             warningActive = false;
-            document.getElementById("roleSelector").value = "paciente";
-            switchRole();
-            alert("Sesión Cerrada.");
+            
+            // Go to login view
+            const views = document.querySelectorAll(".section-view");
+            views.forEach(v => v.classList.remove("active"));
+            document.getElementById("view-login").style.display = "block";
+            document.getElementById("view-login").classList.add("active");
+            toggleAuthView('login');
+            
+            alert("Sesión Cerrada correctamente.");
         }
 
         // =========================================
-        // REGISTRATION & VALIDATION (RF-010/011/013)
+        // REGISTRATION & VALIDATION
         // =========================================
         function validateEcuadorianCedula(cedula) {
             if (cedula.length !== 10) return false;
@@ -1457,23 +1502,6 @@
             const calculated = modulo === 0 ? 0 : 10 - modulo;
             return calculated === lastDigit;
         }
-
-        // Input listener feedback
-        document.getElementById("regCedula").addEventListener("input", function() {
-            const val = this.value;
-            const feedback = document.getElementById("cedulaFeedback");
-            if (val.length === 10) {
-                if (validateEcuadorianCedula(val)) {
-                    feedback.textContent = "Cédula Válida (Módulo 10).";
-                    feedback.style.color = "var(--success)";
-                } else {
-                    feedback.textContent = "Cédula Inválida (Algoritmo fallido).";
-                    feedback.style.color = "var(--danger)";
-                }
-            } else {
-                feedback.textContent = "";
-            }
-        });
 
         function handleRegistration() {
             const cedula = document.getElementById("regCedula").value;
@@ -1504,6 +1532,13 @@
                 consent: true
             });
 
+            // Register default account for this email
+            mockAccounts[email] = {
+                pass: "paciente123",
+                role: "paciente",
+                name: nombre
+            };
+
             document.getElementById("registrationSuccessAlert").style.display = "block";
             
             // Clear Form
@@ -1516,7 +1551,11 @@
 
             setTimeout(() => {
                 document.getElementById("registrationSuccessAlert").style.display = "none";
-            }, 5000);
+                toggleAuthView('login');
+                // Fill fields with newly registered patient data
+                document.getElementById("loginEmail").value = email;
+                document.getElementById("loginPass").value = "paciente123";
+            }, 3000);
         }
 
         function searchPatients() {
@@ -1535,7 +1574,7 @@
                     <td>${p.phone}</td>
                     <td><span class="badge badge-success">Otorgado (LGPD)</span></td>
                     <td>
-                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;" onclick="selectPatientForBooking('${p.cedula}', '${p.name}')">
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px; width: auto;" onclick="selectPatientForBooking('${p.cedula}', '${p.name}')">
                             Agendar Cita
                         </button>
                     </td>
@@ -1552,7 +1591,7 @@
         }
 
         // =========================================
-        // CITAS & AGENDA (RF-014/015/016/017/018)
+        // CITAS & AGENDA
         // =========================================
         function loadDoctorsForBooking() {
             const sucursal = document.getElementById("bookSucursal").value;
@@ -1593,7 +1632,6 @@
             slots.forEach((slot, index) => {
                 const btn = document.createElement("div");
                 btn.className = "slot-btn";
-                // Mock disable some slots
                 if (index % 3 === 0) {
                     btn.className += " disabled";
                     btn.textContent = slot;
@@ -1653,7 +1691,6 @@
             const isWalkin = document.getElementById("walkinCheck") ? document.getElementById("walkinCheck").checked : false;
 
             if (isWalkin) {
-                // Direct confirmation for Walk-in (RF-016)
                 const newCita = {
                     id: "app-" + (mockAppointments.length + 1),
                     datetime: activePreReserva.datetime,
@@ -1665,82 +1702,13 @@
                 };
                 mockAppointments.push(newCita);
                 activePreReserva = null;
-                alert("Cita de Walk-in Agendada y Confirmada Correctamente.");
+                alert("Cita de Walk-in Agendada y Confirmada.");
                 loadAppointmentsTable();
                 activateTab("citas");
             } else {
                 startPreReservaTimer();
                 updateBookingSummaryCard();
             }
-        }
-
-        function startPreReservaTimer() {
-            prereservaTimeLeft = 900; // 15 mins
-            clearInterval(prereservaInterval);
-
-            prereservaInterval = setInterval(() => {
-                prereservaTimeLeft--;
-                const min = Math.floor(prereservaTimeLeft / 60);
-                const sec = prereservaTimeLeft % 60;
-                
-                const timerEl = document.getElementById("prereservaTimer");
-                if (timerEl) {
-                    timerEl.textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
-                }
-
-                if (prereservaTimeLeft <= 0) {
-                    clearInterval(prereservaInterval);
-                    activePreReserva = null;
-                    updateBookingSummaryCard();
-                    alert("El tiempo de tu pre-reserva (15 min) ha expirado. El espacio se ha liberado.");
-                }
-            }, 1000);
-        }
-
-        function updateBookingSummaryCard() {
-            const card = document.getElementById("bookingSummaryContent");
-            if (!activePreReserva) {
-                card.innerHTML = `
-                    <p style="color: var(--text-muted); text-align: center; padding: 40px 0;">
-                        No tienes ninguna cita pre-reservada en este momento.
-                    </p>
-                `;
-                return;
-            }
-
-            card.innerHTML = `
-                <div style="background-color: var(--primary-light); padding: 12px; border-radius: 8px; margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; font-weight: 700; color: var(--primary-dark);">PRE-RESERVA ACTIVA</span>
-                        <span id="prereservaTimer" style="font-size: 14px; font-weight: 700; color: var(--danger);">15:00</span>
-                    </div>
-                </div>
-                <div class="receipt-row">
-                    <span style="color: var(--text-muted);">Especialista:</span>
-                    <span style="font-weight: 600;">${activePreReserva.doctor}</span>
-                </div>
-                <div class="receipt-row">
-                    <span style="color: var(--text-muted);">Especialidad:</span>
-                    <span style="font-weight: 600;">${activePreReserva.specialty}</span>
-                </div>
-                <div class="receipt-row">
-                    <span style="color: var(--text-muted);">Sucursal:</span>
-                    <span style="font-weight: 600;">${activePreReserva.sucursal}</span>
-                </div>
-                <div class="receipt-row">
-                    <span style="color: var(--text-muted);">Fecha y Hora:</span>
-                    <span style="font-weight: 600;">${activePreReserva.datetime}</span>
-                </div>
-                <div class="receipt-row" style="margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 8px;">
-                    <span style="color: var(--text-muted); font-weight: 700;">Copago Neto:</span>
-                    <span style="font-weight: 700; color: var(--primary-dark);">${activePreReserva.price}</span>
-                </div>
-
-                <div style="display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap;">
-                    <button class="btn btn-secondary" style="flex: 1; min-width: 100px;" onclick="cancelPreReserva()">Cancelar</button>
-                    <button class="btn btn-primary" style="flex: 2; min-width: 150px;" onclick="openPaymentModal()">Pagar y Confirmar</button>
-                </div>
-            `;
         }
 
         function cancelPreReserva() {
@@ -1790,10 +1758,6 @@
             }
 
             const app = mockAppointments.find(a => a.id === appId);
-            
-            // Reembolso calculador (4h)
-            // Simular fecha de cita vs fecha actual (hoy 2026-07-14)
-            // Si la cita es mañana o después (>4h), reembolso 100%. Si es hoy en menos de 4h, 0%.
             const refundPercent = app.datetime.includes("2026-07-15") || app.datetime.includes("2026-07-16") ? 100 : 0;
             
             app.status = "CANCELADA";
@@ -1807,7 +1771,7 @@
         }
 
         // =========================================
-        // PAYMENTS (RF-021/022/023/024)
+        // PAYMENTS
         // =========================================
         function openPaymentModal() {
             document.getElementById("paymentModal").classList.add("active");
@@ -1833,7 +1797,6 @@
 
             clearInterval(prereservaInterval);
 
-            // Add new confirmed appointment
             const newCita = {
                 id: "app-" + (mockAppointments.length + 1),
                 datetime: activePreReserva.datetime,
@@ -1871,7 +1834,6 @@
         function printReceipt(appId) {
             const app = mockAppointments.find(a => a.id === appId);
             
-            // Create a temporary print div/modal simulation
             const overlay = document.createElement("div");
             overlay.className = "modal-overlay active";
             overlay.onclick = function() { document.body.removeChild(overlay); };
@@ -1913,7 +1875,6 @@
                     </div>
                     <div class="receipt-qr">
                         <div class="qr-placeholder">
-                            <!-- Draw simple barcode SVG representing QR -->
                             <svg width="80" height="80" viewBox="0 0 100 100">
                                 <rect x="10" y="10" width="15" height="15" fill="black"/>
                                 <rect x="15" y="15" width="5" height="5" fill="white"/>
