@@ -626,7 +626,7 @@
 
                     <!-- Lockout alert -->
                     <div id="lockoutAlert" class="alert alert-danger" style="display: none;">
-                        <strong>Cuenta Bloqueada (RF-009):</strong> Has superado el límite de 3 intentos fallidos. Por seguridad, la cuenta está inhabilitada por 15 minutos. 
+                        <strong>Cuenta Bloqueada:</strong> Has superado el límite de 3 intentos fallidos. Por seguridad, la cuenta está inhabilitada por 15 minutos. 
                         <span id="lockoutTimer" style="font-weight: 700;">15:00</span>
                     </div>
 
@@ -646,7 +646,7 @@
                         </button>
 
                         <p style="text-align: center; margin-top: 16px; font-size: 12px;">
-                            <a href="#" style="color: var(--primary); text-decoration: none;" onclick="triggerRecovery()">¿Olvidó su contraseña? (RF-002)</a>
+                            <a href="#" style="color: var(--primary); text-decoration: none;" onclick="triggerRecovery()">¿Olvidó su contraseña?</a>
                         </p>
                     </div>
                 </div>
@@ -659,7 +659,7 @@
         <section id="view-registro" class="section-view">
             <div class="card" style="max-width: 600px; margin: 0 auto;">
                 <div class="card-header">
-                    <span class="card-title">Registro de Paciente Nuevo (RF-010)</span>
+                    <span class="card-title">Registro de Paciente Nuevo</span>
                 </div>
 
                 <div id="registrationSuccessAlert" class="alert alert-success" style="display: none;">
@@ -687,11 +687,11 @@
                     <input type="text" id="regCelular" class="form-control" placeholder="0998765432" maxlength="10">
                 </div>
 
-                <!-- LGPD Consent check (RF-013) -->
+                <!-- LGPD Consent check -->
                 <div class="form-check">
                     <input type="checkbox" id="regLgpd">
                     <label for="regLgpd">
-                        <strong>Consentimiento Explícito de Datos (RF-013):</strong> Acepto el tratamiento de mis datos personales y médicos sensibles para el agendamiento y facturación de citas médicas de acuerdo con la LOPDP / LGPD.
+                        <strong>Consentimiento Explícito de Datos:</strong> Acepto el tratamiento de mis datos personales y médicos sensibles para el agendamiento y facturación de citas médicas de acuerdo con la LOPDP / LGPD.
                     </label>
                 </div>
 
@@ -707,7 +707,7 @@
         <section id="view-busqueda" class="section-view">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Búsqueda de Pacientes Existentes (RF-011)</span>
+                    <span class="card-title">Búsqueda de Pacientes Existentes</span>
                 </div>
 
                 <div class="form-group" style="max-width: 500px; display: flex; gap: 8px;">
@@ -743,20 +743,20 @@
                 <!-- Configurator -->
                 <div class="card">
                     <div class="card-header">
-                        <span class="card-title" id="bookingCardTitle">Pre-Reserva de Cita (RF-014)</span>
+                        <span class="card-title" id="bookingCardTitle">Pre-Reserva de Cita</span>
                     </div>
 
                     <div id="walkinToggleContainer" class="form-group" style="display: none; background: var(--primary-light); padding: 12px; border-radius: 8px;">
                         <div class="form-check" style="margin-top: 0;">
                             <input type="checkbox" id="walkinCheck" onchange="toggleWalkinMode()">
                             <label for="walkinCheck">
-                                <strong>Modo Paciente sin Cita (Walk-in - RF-016):</strong> Activar bloqueo y reserva directa de espacio libre para pacientes presentes físicamente.
+                                <strong>Modo Paciente sin Cita (Walk-in):</strong> Activar bloqueo y reserva directa de espacio libre para pacientes presentes físicamente.
                             </label>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="bookSucursal">Sucursal (RF-025)</label>
+                        <label class="form-label" for="bookSucursal">Sucursal</label>
                         <select id="bookSucursal" class="form-control" onchange="loadDoctorsForBooking()">
                             <option value="Matriz Sur">Matriz Sur (Guamaní)</option>
                             <option value="La Arcadia">La Arcadia</option>
@@ -765,7 +765,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="bookEspecialidad">Especialidad (RF-027)</label>
+                        <label class="form-label" for="bookEspecialidad">Especialidad</label>
                         <select id="bookEspecialidad" class="form-control" onchange="loadDoctorsForBooking()">
                             <option value="Ginecología">Ginecología</option>
                             <option value="Obstetricia">Obstetricia</option>
@@ -786,7 +786,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Bloques Horarios Disponibles (Cero Colisiones - RNF-004)</label>
+                        <label class="form-label">Bloques Horarios Disponibles (Cero Colisiones)</label>
                         <div class="slot-grid" id="slotsContainer">
                             <!-- Slots dynamic -->
                         </div>
@@ -817,7 +817,7 @@
         <section id="view-citas" class="section-view">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Historial de Citas (RF-012)</span>
+                    <span class="card-title">Historial de Citas</span>
                 </div>
 
                 <div class="table-responsive">
@@ -827,7 +827,7 @@
                                 <th>Fecha y Hora</th>
                                 <th>Especialista / Sucursal</th>
                                 <th>Especialidad</th>
-                                <th>Estado de Pago (RF-019)</th>
+                                <th>Estado de Pago</th>
                                 <th>Costo Base</th>
                                 <th>Acción</th>
                             </tr>
@@ -846,7 +846,7 @@
         <section id="view-medico" class="section-view">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Autogestión de Disponibilidad por Médico (RF-025)</span>
+                    <span class="card-title">Autogestión de Disponibilidad por Médico</span>
                 </div>
                 <div class="alert alert-info">
                     <strong>Médico:</strong> Dr. Santiago Rueda | Especialidad: Obstetricia | Sucursal: Matriz Sur
@@ -876,13 +876,13 @@
                                 <input type="time" class="form-control" value="14:00">
                             </div>
                         </div>
-                        <button class="btn btn-primary" onclick="alert('Agenda guardada con validación física de consultorios (RF-025).')">
+                        <button class="btn btn-primary" onclick="alert('Agenda guardada con validación física de consultorios.')">
                             Guardar Agenda
                         </button>
                     </div>
 
                     <div>
-                        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Mis Especialidades Habilitadas (RF-027)</h3>
+                        <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 12px;">Mis Especialidades Habilitadas</h3>
                         <div class="form-check">
                             <input type="checkbox" id="spec1" checked disabled>
                             <label for="spec1">Obstetricia (Primaria)</label>
@@ -909,7 +909,7 @@
         <section id="view-config" class="section-view">
             <div class="card">
                 <div class="card-header">
-                    <span class="card-title">Configuración de Horario Global de Clínica (RF-026)</span>
+                    <span class="card-title">Configuración de Horario Global de Clínica</span>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Sucursal</label>
@@ -965,7 +965,7 @@
                 <!-- Reporte 1 -->
                 <div class="card">
                     <div class="card-header">
-                        <span class="card-title">Citas Confirmadas (RF-028)</span>
+                        <span class="card-title">Citas Confirmadas</span>
                     </div>
                     <p style="font-size: 24px; font-weight: 700; color: var(--primary-dark);">148 Citas</p>
                     <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Este Mes (Filtrable por sucursal)</p>
@@ -988,7 +988,7 @@
                 <!-- Reporte 2 -->
                 <div class="card">
                     <div class="card-header">
-                        <span class="card-title">Reporte de Ausentismo (RF-029)</span>
+                        <span class="card-title">Reporte de Ausentismo</span>
                     </div>
                     <p style="font-size: 24px; font-weight: 700; color: var(--warning);">8.4% Tasa</p>
                     <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Ausentismo de pacientes este mes</p>
@@ -1011,7 +1011,7 @@
                 <!-- Reporte 3 -->
                 <div class="card">
                     <div class="card-header">
-                        <span class="card-title">Cancelaciones (RF-030)</span>
+                        <span class="card-title">Cancelaciones</span>
                     </div>
                     <p style="font-size: 24px; font-weight: 700; color: var(--danger);">24 Citas</p>
                     <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Citas canceladas y motivos</p>
@@ -1031,7 +1031,7 @@
                     </svg>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="alert('Generando Reporte PDF Protegido Inmutable (RF-028)...')">
+            <button class="btn btn-primary" onclick="alert('Generando Reporte PDF Protegido Inmutable...')">
                 Exportar Reporte Protegido
             </button>
         </section>
@@ -1042,7 +1042,7 @@
     <!-- OVERLAYS & MODALS -->
     <!-- ========================================= -->
 
-    <!-- Session Warning Modal (RF-005) -->
+    <!-- Session Warning Modal -->
     <div id="sessionWarningModal" class="modal-overlay">
         <div class="modal-content">
             <h3 style="font-size: 18px; font-weight: 700; color: var(--warning); margin-bottom: 12px;">¡Advertencia de Inactividad!</h3>
@@ -1062,7 +1062,7 @@
     <!-- Payments Modal -->
     <div id="paymentModal" class="modal-overlay">
         <div class="modal-content" style="max-width: 480px;">
-            <h3 style="font-size: 18px; font-weight: 700; color: var(--primary-dark); margin-bottom: 12px;">Procesamiento de Pago (RF-021)</h3>
+            <h3 style="font-size: 18px; font-weight: 700; color: var(--primary-dark); margin-bottom: 12px;">Procesamiento de Pago</h3>
             <div class="form-group">
                 <label class="form-label">Detalle de Cobro</label>
                 <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px;">
@@ -1080,7 +1080,7 @@
             </div>
 
             <div class="form-group">
-                <label class="form-label" for="payMethod">Método de Pago (RF-023)</label>
+                <label class="form-label" for="payMethod">Método de Pago</label>
                 <select id="payMethod" class="form-control" onchange="togglePayDetails()">
                     <option value="card">Tarjeta de Crédito / Débito (Stripe)</option>
                     <option value="transfer">Transferencia Directa (PSE / ACH)</option>
@@ -1205,10 +1205,10 @@
             const walkinContainer = document.getElementById("walkinToggleContainer");
             if (role === "recepcionista") {
                 walkinContainer.style.display = "block";
-                document.getElementById("bookingCardTitle").textContent = "Agendamiento Recepcionista (RF-015)";
+                document.getElementById("bookingCardTitle").textContent = "Agendamiento Recepcionista";
             } else {
                 walkinContainer.style.display = "none";
-                document.getElementById("bookingCardTitle").textContent = "Pre-Reserva de Cita (RF-014)";
+                document.getElementById("bookingCardTitle").textContent = "Pre-Reserva de Cita";
             }
 
             // Simulate logged user in some roles
@@ -1282,7 +1282,7 @@
         }
 
         function triggerRecovery() {
-            const email = prompt("Ingrese su email registrado para recuperación (RF-002):");
+            const email = prompt("Ingrese su email registrado para recuperación:");
             if (email) {
                 alert("Se ha enviado un enlace de recuperación con token único válido por 1 hora a " + email);
             }
@@ -1306,7 +1306,7 @@
             }, 1000);
         }
 
-        // Sesión Expiración Automática (RF-005)
+        // Sesión Expiración Automática
         function startGlobalInactivityTracker() {
             document.body.onmousemove = resetInactivity;
             document.body.onkeypress = resetInactivity;
@@ -1323,7 +1323,7 @@
 
                 if (inactSeconds >= 900) {
                     logoutSession();
-                    alert("Sesión Expirada por Inactividad (RF-005).");
+                    alert("Sesión Expirada por Inactividad.");
                 }
                 
                 // Update badge text
@@ -1381,7 +1381,7 @@
             warningActive = false;
             document.getElementById("roleSelector").value = "paciente";
             switchRole();
-            alert("Sesión Cerrada (RF-004).");
+            alert("Sesión Cerrada.");
         }
 
         // =========================================
@@ -1440,7 +1440,7 @@
                 return;
             }
             if (!lgpdChecked) {
-                alert("Error (RF-013): Debe otorgar su consentimiento explícito de protección de datos.");
+                alert("Error: Debe otorgar su consentimiento explícito de protección de datos.");
                 return;
             }
 
@@ -1496,7 +1496,7 @@
         function selectPatientForBooking(cedula, name) {
             alert(`Paciente seleccionado: ${name}. Procediendo al agendamiento.`);
             activateTab("reserva");
-            document.getElementById("bookingCardTitle").textContent = `Agendamiento para: ${name} (RF-015)`;
+            document.getElementById("bookingCardTitle").textContent = `Agendamiento para: ${name}`;
             currentUser = { role: "recepcionista", name: name, cedula: cedula, isBookingForPatient: true };
         }
 
@@ -1565,7 +1565,7 @@
         function toggleWalkinMode() {
             const checked = document.getElementById("walkinCheck").checked;
             if (checked) {
-                alert("Modo Walk-in Activo: El espacio seleccionado se bloqueará y confirmará directamente sin requerir pasarela de pago Stripe (RF-016).");
+                alert("Modo Walk-in Activo: El espacio seleccionado se bloqueará y confirmará directamente sin requerir pasarela de pago Stripe.");
             }
         }
 
@@ -1602,7 +1602,7 @@
             const isWalkin = document.getElementById("walkinCheck") ? document.getElementById("walkinCheck").checked : false;
 
             if (isWalkin) {
-                // Direct confirmation for Walk-in (RF-016)
+                // Direct confirmation for Walk-in
                 const newCita = {
                     id: "app-" + (mockAppointments.length + 1),
                     datetime: activePreReserva.datetime,
@@ -1663,7 +1663,7 @@
         }
 
         function cancelAppointment(appId) {
-            const reason = prompt("Ingrese el motivo obligatorio de su cancelación (RF-018):");
+            const reason = prompt("Ingrese el motivo obligatorio de su cancelación:");
             if (!reason) {
                 alert("Error: El motivo de cancelación es obligatorio.");
                 return;
@@ -1680,7 +1680,7 @@
             loadAppointmentsTable();
 
             if (refundPercent === 100) {
-                alert(`Cita Cancelada con éxito. Reembolso Procesado: 100% de la tarifa devuelta a su método de pago original (RF-024).`);
+                alert(`Cita Cancelada con éxito. Reembolso Procesado: 100% de la tarifa devuelta a su método de pago original.`);
             } else {
                 alert(`Cita Cancelada. De acuerdo con la política (<4 horas de anticipación), el cargo por cancelación es del 100%. Reembolso: $0.00.`);
             }
@@ -1761,7 +1761,7 @@
             content.onclick = function(e) { e.stopPropagation(); };
 
             content.innerHTML = `
-                <h3 style="font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 12px;">Comprobante de Pago Electrónico (RF-022)</h3>
+                <h3 style="font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 12px;">Comprobante de Pago Electrónico</h3>
                 <div class="receipt-container">
                     <div class="receipt-header">
                         <h4 style="font-size: 15px; font-weight: 700; color: var(--primary-dark);">Clinica Renacer</h4>
