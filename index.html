@@ -1279,19 +1279,24 @@
             const regBtn = document.getElementById("registerTabBtn");
             const subContainer = document.getElementById("loginFormSubContainer");
             const regView = document.getElementById("view-registro");
+            const loginView = document.getElementById("view-login");
+
+            // Reset inline styles to avoid overrides
+            regView.style.display = "";
+            loginView.style.display = "";
 
             if (view === "login") {
                 loginBtn.classList.add("active");
                 regBtn.classList.remove("active");
                 subContainer.style.display = "block";
-                regView.style.display = "none";
-                document.getElementById("view-login").classList.add("active");
+                regView.classList.remove("active");
+                loginView.classList.add("active");
             } else {
                 loginBtn.classList.remove("active");
                 regBtn.classList.add("active");
                 subContainer.style.display = "none";
-                regView.style.display = "block";
-                document.getElementById("view-login").classList.remove("active");
+                regView.classList.add("active");
+                loginView.classList.remove("active");
             }
         }
 
@@ -1430,9 +1435,12 @@ updateHeaderUserUI();
                 }
             }
 
-            // Hide all views
+            // Hide all views and reset inline displays
             const views = document.querySelectorAll(".section-view");
-            views.forEach(v => v.classList.remove("active"));
+            views.forEach(v => {
+                v.classList.remove("active");
+                v.style.display = ""; // Clean any inline overrides
+            });
 
             // Show active view
             const targetView = document.getElementById(`view-${viewId}`);
@@ -1568,8 +1576,10 @@ updateHeaderUserUI();
             
             // Go to login view
             const views = document.querySelectorAll(".section-view");
-            views.forEach(v => v.classList.remove("active"));
-            document.getElementById("view-login").style.display = "block";
+            views.forEach(v => {
+                v.classList.remove("active");
+                v.style.display = ""; // Clean overrides
+            });
             document.getElementById("view-login").classList.add("active");
             toggleAuthView('login');
             
